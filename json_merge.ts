@@ -6,10 +6,12 @@ export class MergeResults {
    *
    */
   constructor() {
+    this.conflicts = []
+    this.merged = {}
   }
 }
 
 // TODO: support non-objects (arrays, strings, etc)
 export function json_merge(base: object, theirs: object, yours: object): MergeResults {
-  return []
+  return new MergeResults()
 }
