@@ -27,8 +27,23 @@ export class MergeResults {
   }
 }
 
+function get_variable_type(obj: any): string{
+    if (Array.isArray(obj)) return 'array';
+    if (typeof(obj) === 'object') return 'object';
+    return 'primitive';
+}
+
+export function json_merge(base: any, theirs: any, yours: any): MergeResults{
+    const base_type = get_variable_type(base);
+    const theirs_type = get_variable_type(base);
+    const yours_type = get_variable_type(base);
+    if (base_type === theirs_type && theirs_type === yours_type && yours_type === 'object')
+        return json_merge_objects(<object>base, <object>theirs, <object>yours);
+    return new MergeResults({}, []);
+}
+
 // TODO: support non-objects (arrays, strings, etc)
-export function json_merge(base: object, theirs: object, yours: object): MergeResults {
+function json_merge_objects(base: object, theirs: object, yours: object): MergeResults {
     const base_keys = new Set(Object.keys(base));
     const their_keys = new Set(Object.keys(theirs));
     const your_keys = new Set(Object.keys(yours));
