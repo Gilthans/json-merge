@@ -7,7 +7,10 @@ test('Empty jsons should have no conflict', () => {
 
 test('Base and theirs same should always output yours', () => {
   const samples = [
-      [{}, {}, {}]
+      [{}, {}],
+      [{a: 'hi'}, {a: 'bye'}],
+      [{a: 'hi'}, {a: 'hi', b: 'bye'}],
+      [{a: 'hi'}, {b: 'bye'}],
   ];
   for(const sample of samples){
     const base = sample[0];
