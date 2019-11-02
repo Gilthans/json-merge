@@ -52,7 +52,7 @@ export function json_merge(base: object, theirs: object, yours: object): MergeRe
             return;
         }
 
-        if (your_changed_keys.has(key) && their_changed_keys.has(key)){
+        if (your_changed_keys.has(key) && their_changed_keys.has(key) && yours[key] != theirs[key]){
             const conflict = new Conflict('concurrent_change', key, base[key], theirs[key], yours[key]);
             conflicts.push(conflict);
             merge_result[key] = conflict;

@@ -37,7 +37,23 @@ test('Base and yours same should always output theirs', () => {
   }
 });
 
-test('Added fields should cause no conflict', () => {
+test('Yours and theirs same should never have conflict', () => {
+  const samples = [
+      [{}, {}],
+      [{a: 'hi'}, {a: 'bye'}],
+      [{a: 'hi'}, {a: 'hi', b: 'bye'}],
+      [{a: 'hi'}, {b: 'bye'}],
+  ];
+  for(const sample of samples){
+    const base = sample[0];
+    const test = sample[1];
+    const merge_result = json_merge(base, test, test);
+    expect(merge_result.merged).toEqual(test);
+    expect(merge_result.conflicts.length).toEqual(0);
+  }
+});
+
+test('Different added fields should cause no conflict', () => {
     const merge_result = json_merge({a: 'hi'}, {a: 'hi', b: 'bye'}, {a: 'hi', c: 'goodbye'});
     expect(merge_result.conflicts.length).toEqual(0);
     expect(merge_result.merged).toEqual({a: 'hi', b: 'bye', c: 'goodbye'});
