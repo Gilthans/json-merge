@@ -66,9 +66,17 @@ export function json_merge(base: object, theirs: object, yours: object): MergeRe
             merge_result[key] = base[key];
     });
     their_added_keys.forEach(key => {
+        if (your_added_keys.has(key) && yours[key] != theirs[key]){
+            const conflict = new Conflict('concurrent_addition', key, null, theirs[key], yours[key]);
+            conflicts.push(conflict);
+            merge_result[key] = conflict;
+            return;
+        }
         merge_result[key] = theirs[key];
     });
     your_added_keys.forEach(key => {
+        if (their_added_keys.has(key))
+            return;
         merge_result[key] = yours[key];
     });
 

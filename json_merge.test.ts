@@ -61,3 +61,10 @@ test('Same field changed should cause conflict', () => {
     expect(merge_result.conflicts[0]).toEqual(new Conflict('concurrent_change', 'a', 'base', 'theirs', 'yours'));
     expect(merge_result.merged).toEqual({a: merge_result.conflicts[0]});
 });
+
+test('Same field added with different value should cause conflict', () => {
+    const merge_result = json_merge({a: 'hi'}, {a: 'hi', b: 'theirs'}, {a: 'hi', b: 'yours'});
+    expect(merge_result.conflicts.length).toEqual(1);
+    expect(merge_result.conflicts[0]).toEqual(new Conflict('concurrent_addition', 'b', null, 'theirs', 'yours'));
+    expect(merge_result.merged).toEqual({a: 'hi', b: merge_result.conflicts[0]});
+});
