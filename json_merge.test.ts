@@ -1,4 +1,4 @@
-import {json_merge} from "./json_merge"
+import {json_merge, Conflict} from "./json_merge"
 
 test('Empty jsons should have no conflict', () => {
   const merge_result = json_merge({}, {}, {});
@@ -53,4 +53,11 @@ test('Different removed fields should cause no conflict', () => {
     const merge_result = json_merge({a: 'hi1', b: 'hi2', c: 'hi3'}, {a: 'hi1', b: 'hi2'}, {a: 'hi1', c: 'hi3'});
     expect(merge_result.conflicts.length).toEqual(0);
     expect(merge_result.merged).toEqual({a: 'hi1'});
+});
+
+test('Same field changed should cause conflict', () => {
+    const merge_result = json_merge({a: 'base'}, {a: 'theirs'}, {a: 'yours'});
+    expect(merge_result.conflicts.length).toEqual(1);
+    expect(merge_result.conflicts[0]).toEqual(new Conflict('concurrent_change', 'a', 'base', 'theirs', 'yours'));
+    expect(merge_result.merged).toEqual({a: merge_result.conflicts[0]});
 });

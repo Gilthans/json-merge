@@ -1,11 +1,27 @@
 
+export class Conflict {
+    type: string;
+    path: string;
+    base_value: object;
+    their_value: object;
+    your_value: object;
+
+    constructor(type: string, path: string, base_value: any, their_value: any, your_value: any) {
+        this.type = type;
+        this.path = path;
+        this.base_value = base_value;
+        this.their_value = their_value;
+        this.your_value = your_value;
+    }
+}
+
 export class MergeResults {
-  conflicts: string[];
+  conflicts: Conflict[];
   merged: object;
   /**
    *
    */
-  constructor(merged: object, conflicts: string[]) {
+  constructor(merged: object, conflicts: Conflict[]) {
     this.conflicts = conflicts;
     this.merged = merged;
   }
@@ -26,7 +42,8 @@ export function json_merge(base: object, theirs: object, yours: object): MergeRe
     const their_removed_keys = new Set([...base_keys].filter(key => !their_keys.has(key)));
     const your_removed_keys = new Set([...base_keys].filter(key => !your_keys.has(key)));
 
-    let merge_results = {};
+    const merge_result = {};
+    const conflicts = [];
     base_keys.forEach(key => {
         if (your_removed_keys.has(key) || their_removed_keys.has(key)){
             if (their_changed_keys.has(key) || your_changed_keys.has(key)){
@@ -36,22 +53,24 @@ export function json_merge(base: object, theirs: object, yours: object): MergeRe
         }
 
         if (your_changed_keys.has(key) && their_changed_keys.has(key)){
-            // TODO
+            const conflict = new Conflict('concurrent_change', key, base[key], theirs[key], yours[key]);
+            conflicts.push(conflict);
+            merge_result[key] = conflict;
         }
         else if (your_changed_keys.has(key))
-            merge_results[key] = yours[key];
+            merge_result[key] = yours[key];
         else if (their_changed_keys.has(key))
-            merge_results[key] = theirs[key];
+            merge_result[key] = theirs[key];
         else
             // Can this happen?
-            merge_results[key] = base[key];
+            merge_result[key] = base[key];
     });
     their_added_keys.forEach(key => {
-        merge_results[key] = theirs[key];
+        merge_result[key] = theirs[key];
     });
     your_added_keys.forEach(key => {
-        merge_results[key] = yours[key];
+        merge_result[key] = yours[key];
     });
 
-    return new MergeResults(merge_results, []);
+    return new MergeResults(merge_result, conflicts);
 }
