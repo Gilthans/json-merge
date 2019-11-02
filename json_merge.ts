@@ -28,8 +28,8 @@ export function json_merge(base: object, theirs: object, yours: object): MergeRe
 
     let merge_results = {};
     base_keys.forEach(key => {
-        if (your_removed_keys.has(key)){
-            if (their_changed_keys.has(key)){
+        if (your_removed_keys.has(key) || their_removed_keys.has(key)){
+            if (their_changed_keys.has(key) || your_changed_keys.has(key)){
                 // TODO
             }
             return;
@@ -40,8 +40,11 @@ export function json_merge(base: object, theirs: object, yours: object): MergeRe
         }
         else if (your_changed_keys.has(key))
             merge_results[key] = yours[key];
-        else
+        else if (their_changed_keys.has(key))
             merge_results[key] = theirs[key];
+        else
+            // Can this happen?
+            merge_results[key] = base[key];
     });
     their_added_keys.forEach(key => {
         merge_results[key] = theirs[key];
