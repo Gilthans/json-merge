@@ -48,3 +48,9 @@ test('Different changed fields should cause no conflict', () => {
     expect(merge_result.conflicts.length).toEqual(0);
     expect(merge_result.merged).toEqual({a: 'bye1', b: 'bye2'});
 });
+
+test('Different removed fields should cause no conflict', () => {
+    const merge_result = json_merge({a: 'hi1', b: 'hi2', c: 'hi3'}, {a: 'hi1', b: 'hi2'}, {a: 'hi1', c: 'hi3'});
+    expect(merge_result.conflicts.length).toEqual(0);
+    expect(merge_result.merged).toEqual({a: 'hi1'});
+});
