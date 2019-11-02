@@ -21,7 +21,7 @@ test('Base and theirs same should always output yours', () => {
     }
 });
 
-test.only('Base and yours same should always output theirs', () => {
+test('Base and yours same should always output theirs', () => {
   const samples = [
       [{}, {}],
       [{a: 'hi'}, {a: 'bye'}],
