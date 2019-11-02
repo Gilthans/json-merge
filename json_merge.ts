@@ -6,8 +6,8 @@ export class MergeResults {
    *
    */
   constructor() {
-    this.conflicts = []
-    this.merged = {}
+    this.conflicts = [];
+    this.merged = {};
   }
 }
 

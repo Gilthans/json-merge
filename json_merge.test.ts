@@ -17,6 +17,3 @@ test('Base and theirs same should always output yours', () => {
     expect(merge_result.merged).toEqual(test);
     }
 });
-
-
-
