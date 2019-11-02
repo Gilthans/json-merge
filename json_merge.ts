@@ -45,9 +45,19 @@ export function json_merge(base: object, theirs: object, yours: object): MergeRe
     const merge_result = {};
     const conflicts = [];
     base_keys.forEach(key => {
-        if (your_removed_keys.has(key) || their_removed_keys.has(key)){
-            if (their_changed_keys.has(key) || your_changed_keys.has(key)){
-                // TODO
+        if (your_removed_keys.has(key)){
+            if (their_changed_keys.has(key)){
+                const conflict = new Conflict('change_removed', key, base[key], theirs[key], null);
+                conflicts.push(conflict);
+                merge_result[key] = conflict;
+            }
+            return;
+        }
+        if (their_removed_keys.has(key)){
+            if (your_changed_keys.has(key)){
+                const conflict = new Conflict('change_removed', key, base[key], null, yours[key]);
+                conflicts.push(conflict);
+                merge_result[key] = conflict;
             }
             return;
         }
