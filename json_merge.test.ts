@@ -20,3 +20,9 @@ test('Base and theirs same should always output yours', () => {
     expect(merge_result.merged).toEqual(test);
     }
 });
+
+test('Added fields should cause no conflict', () => {
+    const merge_result = json_merge({a: 'hi'}, {a: 'hi', b: 'bye'}, {a: 'hi', c: 'goodbye'});
+    expect(merge_result.conflicts.length).toEqual(0);
+    expect(merge_result.merged).toEqual({a: 'hi', b: 'bye', c: 'goodbye'});
+});
